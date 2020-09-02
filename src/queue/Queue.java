@@ -3,8 +3,9 @@ package queue;
 public interface Queue<E> {
     /**
      * 添加元素
+     * 成功则返回true，失败返回false
      */
-    void push(E e);
+    boolean push(E e);
 
     /**
      * 出列，返回队列头部并删除，队列为空则返回null

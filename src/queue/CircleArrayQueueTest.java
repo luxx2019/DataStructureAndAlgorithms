@@ -2,11 +2,11 @@ package queue;
 
 import beans.Employee;
 
-public class LinkedQueueTest {
+public class CircleArrayQueueTest {
 
     public static void main(String[] args) {
 
-        Queue<Employee> queue = new LinkedQueue<>();
+        Queue<Employee> queue = new CircleArrayQueue<>();
 
         Employee e1 = new Employee("张三风", 15);
         Employee e2 = new Employee("李成功", 27);

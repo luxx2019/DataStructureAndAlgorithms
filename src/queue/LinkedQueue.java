@@ -19,21 +19,28 @@ public class LinkedQueue<E> implements Queue<E> {
     }
 
     @Override
-    public void push(E e) {
+    public boolean push(E e) {
         Node<E> node = new Node<>();
         node.data = e;
+
         rear.next = node;
         node.pre = rear;
+
         rear = rear.next;
+
         size++;
+
+        return true;
     }
 
     @Override
     public E pop() {
         if (isEmpty()) return null;
+
         E e = head.next.data;
         head = head.next;
-        size++;
+
+        size--;
         return e;
     }
 

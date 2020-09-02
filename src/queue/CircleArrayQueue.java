@@ -7,89 +7,68 @@ package queue;
  * 判空判满的的条件都是 front == (rear + 1) % arr.length
  * 此时我们把队列尾部留下一个空格不用，用以区分
  * 那么，此时判空条件不变，判满的条件为 front == (rear + 2) % arr.length
- * 为了与 ArrayQueue 不同，此处代码采用不一样的方式，头指针指向队列的头下标，尾指针指向队列尾下标
  *
  * 在debug的过程中，发现当 front 初始值为 0，rear 初始值为 -1 时，如果不进行一次出队列操作，那么就永远不会满足判满的条件
- * 因为是循环队列，不在乎从数组的什么地方开始存储队列数据，更改初始值为 front = 1 , rear = 0
+ * 因为是循环队列，不在乎从数组的什么地方开始存储队列数据，更改初始值为 front = 0 , rear = size - 1
+ *
+ * 类型参数无法实例化
  */
-public class CircleArrayQueue {
-    private int maxSize;
+public class CircleArrayQueue<E> implements Queue<E> {
+    private int size = 1000;
     private int front;
     private int rear;
-    private int[] arr;
+    private Object[] elements;
 
-    public static void main(String[] args) {
-        CircleArrayQueue aq = new CircleArrayQueue(10);
-        aq.addQueue(3);
-        aq.addQueue(5);
-        aq.addQueue(7);
-        aq.addQueue(3);
-        aq.addQueue(5);
-        aq.addQueue(7);
-        aq.addQueue(3);
-        aq.addQueue(5);
-        aq.addQueue(7);
-        aq.addQueue(3);
-        aq.addQueue(5);
-        aq.addQueue(7);
-        System.out.println(aq.getQueue());
-        aq.showQueue();
-        System.out.println();
-        System.out.println(aq.getQueue());
-        System.out.println(aq.getQueue());
-        System.out.println(aq.getQueue());
-        System.out.println(aq.getQueue());
-        System.out.println(aq.getQueue());
-        System.out.println(aq.getQueue());
-        System.out.println(aq.getQueue());
-        System.out.println(aq.getQueue());
-        System.out.println(aq.getQueue());
-
+    public CircleArrayQueue() {
+        elements = new Object[size];
+        front = 0;
+        rear = size - 1;
     }
 
-    CircleArrayQueue(int maxSize) {
-        this.maxSize = maxSize;
-        arr = new int[maxSize];
-        front = 1;
-        rear = 0;
-        //当队列存储数据的下标为3、4、5时。front=2,rear=5;
-        //front指向第一个数据下标减1，rear指向最后一个数据的下标
+    public CircleArrayQueue(int size) {
+        this.size = size;
+        elements = new Object[size];
+        front = 0;
+        rear = size - 1;
     }
 
     public boolean isFull() {
-        return front == (rear + 2) % arr.length;
-    }
-    public boolean isEmpty() { return front == (rear + 1) % arr.length; }
-    public void addQueue(int n) {
-        if(isFull()){
-            System.out.println("队列已满，无法添加新数据");
-            return;
-        }
-        rear = (rear + 1) % maxSize;
-        arr[rear] = n;
+        return front == (rear + 2) % size;
     }
 
-    public int getQueue(){
-        if(isEmpty()){
-            throw new RuntimeException("队列为空，无法取数据");
-        }
-        int re = arr[front];
-        front = (front + 1) % maxSize;
-        return re;
+    public boolean isEmpty() {
+        return front == (rear + 1) % size;
     }
 
-    public void showQueue() {
-        if(isEmpty()){
-            System.out.println("队列为空");
-        }
-        if (rear >= front)
-            for (int i = front; i <= rear; i++)
-                System.out.print(arr[i] + "\t");
-        else {
-            for (int i = front; i <= maxSize - 1; i++)
-                System.out.print(arr[i] + "\t");
-            for (int i = 0; i <= rear; i++)
-                System.out.print(arr[i] + "\t");
-        }
+    public boolean push(E e) {
+        if(isFull()) return false;
+
+        rear = (rear + 1) % size;
+        elements[rear] = e;
+
+        return true;
+    }
+
+    public E pop(){
+        if(isEmpty()) return null;
+
+        E e = (E) elements[front];
+
+        front = (front + 1) % size;
+        return e;
+    }
+
+    public E peek() {
+        if(isEmpty()) return null;
+
+        E e = (E) elements[front];
+
+        return e;
+    }
+
+    @Override
+    public int size() {
+        if (isEmpty()) return 0;
+        return rear >= front ? rear + 1 - front : rear + size + 1 - front;
     }
 }
